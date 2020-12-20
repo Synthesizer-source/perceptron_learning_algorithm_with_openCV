@@ -53,21 +53,15 @@ void shuffle(std::vector<T>& v) {
 	std::shuffle(v.begin(), v.end(), rng);
 }
 
-void calculate_weights(std::vector<float>& weights, const float lr, const float error, const float d_sigmoid, const std::vector<float>& input) {
-    float coef = lr * error * d_sigmoid;
-    for (int i = 0; i < input.size(); i++) {
-        weights[i] += coef * input[i];
-    }
-}
-
 void train(const Matrix& matrix, const std::vector<float>& target, std::vector<float>& weights, const float lr, const int iteration) {
     
     for (int i = 0; i < iteration; i++) {
         for (int j = 0; j < matrix.size(); j++) {
+			/* FEED FORWARD */
             float sum = dot(weights, matrix[j]);
+			/* FEED BACKWARD */
             float d_sigmoid = derivate_sigmoid(sum);
             float error = target[j] - sigmoid(sum);
-            
             int k = 0;
             for (std::vector<float>::iterator it = weights.begin(); it != weights.end(); ++it) {
                 *it += (lr * error * d_sigmoid * matrix[j][k++]);
